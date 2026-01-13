@@ -9,6 +9,9 @@ const adminTopicRoutes = require("./routes/admin/topicRoutes");
 
 const adminQuestionRoutes = require("./routes/admin/questionRoutes");
 const quizRoutes = require("./routes/quizRoutes");
+const leaderboardRoutes = require("./routes/leaderboard/leaderboardRoutes");
+
+
 
 
 
@@ -30,6 +33,8 @@ app.use(cors());
  app.use("/api/admin", adminTopicRoutes);
  app.use("/api/admin", adminQuestionRoutes);
  app.use("/api/quiz", quizRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
+
  
 
 
