@@ -65,6 +65,14 @@ exports.startQuiz = async (req, res) => {
     const userId = req.user._id;
     const { topicId } = req.query;
 
+    if (!topicId) {
+  return res.status(400).json({
+    success: false,
+    message: "Topic ID is required",
+  });
+}
+
+
     // 1️⃣ Find or create user progress
     let progress = await UserProgress.findOne({
       user: userId,
@@ -77,6 +85,13 @@ exports.startQuiz = async (req, res) => {
         topic: topicId,
       });
     }
+    if (progress && progress.completed) {
+  return res.status(400).json({
+    success: false,
+    message: "You have already completed this topic",
+  });
+}
+
 
     // 2️⃣ Get unattempted questions (max 20)
     const questions = await Question.find({
@@ -178,6 +193,11 @@ exports.submitQuiz = async (req, res) => {
     let correctCount = 0;
 
     for (let ans of answers) {
+      // Skip already attempted questions
+if (progress.attemptedQuestions.includes(ans.questionId)) {
+  continue;
+}
+
       const question = await Question.findById(ans.questionId);
       if (!question) continue;
 
@@ -209,15 +229,32 @@ exports.submitQuiz = async (req, res) => {
 
     await progress.save();
 
-    res.status(200).json({
-      success: true,
-      correctAnswers: correctCount,
-      totalQuestions: answers.length,
-      accuracy,
-      level: progress.level,
-      score: progress.score,
-      boostMessage,
-    });
+    // res.status(200).json({
+    //   success: true,
+    //   correctAnswers: correctCount,
+    //   totalQuestions: answers.length,
+    //   accuracy,
+    //   level: progress.level,
+    //   score: progress.score,
+    //   boostMessage,
+    // });
+
+    res.json({
+  success: true,
+  correctAnswers,
+  totalQuestions: answers.length,
+  accuracy,
+  level: progress.level,
+  score: progress.score,
+  badge: progress.badge,
+  message:
+    accuracy >= 90
+      ? "🔥 Excellent work! You're mastering this topic."
+      : accuracy >= 75
+      ? "👍 Good job! Keep practicing to improve."
+      : "💪 Don't give up. Practice makes perfect!",
+});
+
 
   } catch (error) {
     console.error("SUBMIT QUIZ ERROR:", error);
