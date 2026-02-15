@@ -7,8 +7,9 @@ const {
   getAllTopics,
 } = require("../../controllers/admin/topicController");
 
-// Admin topic routes
+
 router.post("/topic", protect, createTopic);
 router.get("/topics", protect, getAllTopics);
 
 module.exports = router;
+
