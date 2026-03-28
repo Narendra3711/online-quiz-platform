@@ -1,0 +1,298 @@
+/* 
+
+.auth-container {
+  height: 100vh;
+  background: linear-gradient(135deg, #4f46e5, #9333ea);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.auth-title {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-input {
+  margin-bottom: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: 0.3s;
+}
+
+.auth-input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.3);
+}
+
+.auth-button {
+  padding: 12px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.auth-button:hover {
+  background: #4338ca;
+  transform: scale(1.03);
+}
+
+.auth-text {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.auth-link {
+  color: #4f46e5;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.auth-text {
+  font-size: 14px;
+}
+
+.auth-link {
+  color: #4f46e5;
+  cursor: pointer;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+} */
+
+
+/* .login-container {
+  height: 100vh;
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.login-card {
+  
+  display: flex;
+
+  width: 800px;
+  min-height: 450px;
+  
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+
+.login-left {
+  width: 50%;
+  background: #2563eb;
+  color: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-left h2 {
+  margin-bottom: 10px;
+}
+
+
+.login-right {
+  width: 50%;
+  padding: 40px;
+}
+
+.auth-title {
+  margin-bottom: 20px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.auth-button:hover {
+  background: #1d4ed8;
+}
+
+.auth-text {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.auth-link {
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+} */
+
+
+
+/* overlay */
+.login-overlay {
+  min-height: 100vh;
+  background: rgba(0,0,0,0.7);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* card */
+.login-card {
+  display: flex;
+  width: 800px;
+  border-radius: 12px;
+  overflow: hidden;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+}
+
+/* LEFT SIDE */
+/* .login-left {
+  width: 50%;
+  padding: 40px;
+
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  text-align: center;
+} */
+ .login-left {
+  width: 50%;
+  padding: 40px;
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+
+  border-right: 1px solid rgba(255,255,255,0.1);
+
+  color: white;
+}
+
+.login-left {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.9),
+    rgba(30, 41, 59, 0.8)
+  );
+}
+
+.login-left h2 {
+  font-size: 24px;
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+}
+
+.login-left p {
+  color: #d1d5db;
+}
+
+.login-left img {
+  width: 150px;
+  height: 150px;
+  margin-top: 20px;
+  border-radius: 30px;
+}
+
+/* RIGHT SIDE */
+.login-right {
+  width: 50%;
+  padding: 40px;
+  color: white;
+}
+
+/* inputs */
+.login-right input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+
+  border: none;
+  border-radius: 8px;
+
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* button */
+.login-right button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  color: white;
+
+  cursor: pointer;
+}
+
+/* link */
+.auth-link {
+  color: #60a5fa;
+  cursor: pointer;
+  font-size: 14px;
+}

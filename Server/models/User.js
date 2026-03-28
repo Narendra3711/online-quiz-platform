@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
+
 const userSchema = new mongoose.Schema(
+  
   {
     name: {
       type: String,
@@ -19,6 +21,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    resetToken: String,
+resetTokenExpire: Date,
+    
 
     role: {
       type: String,
@@ -26,7 +31,8 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
+  
 );
 
 module.exports = mongoose.model("User", userSchema);

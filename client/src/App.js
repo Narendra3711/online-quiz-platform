@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -8,15 +9,28 @@ import Leaderboard from "./pages/Leaderboard";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import Result from "./pages/Result";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
+     <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: "url('/dashboard.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
     <AuthProvider>
       <Router>
         <Routes>
-          
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password" element={<ResetPassword />} />
 
         
           <Route
@@ -63,84 +77,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/app/result" element={
+            <ProtectedRoute><Result /></ProtectedRoute>
+            } />
         </Routes>
       </Router>
     </AuthProvider>
+    </div>
   );
 }
 
 export default App;
 
 
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import { AuthProvider } from "./context/AuthContext";
-
-// import Login from "./pages/Login";
-// import Register from "./pages/Register";
-// import Dashboard from "./pages/Dashboard";
-// import Instructions from "./pages/Instructions";
-// import Resources from "./pages/Resources";
-// import Quiz from "./pages/Quiz";
-// import Result from "./pages/Result";
-// import Profile from "./pages/Profile";
-// import Leaderboard from "./pages/Leaderboard";
-// import AppLayout from "./layouts/AppLayout";
-
-// function App() {
-//   return (
-//     <AuthProvider>
-//       <BrowserRouter>
-//         <Routes>
-          
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/register" element={<Register />} />
-
-          
-//           <Route path="/app" element={<AppLayout />}>
-//             <Route path="dashboard" element={<Dashboard />} />
-//             <Route path="instructions/:topicId" element={<Instructions />} />
-//             <Route path="resources/:topicId" element={<Resources />} />
-//             <Route path="quiz/:topicId" element={<Quiz />} />
-//             <Route path="result" element={<Result />} />
-//             <Route path="profile" element={<Profile />} />
-//             <Route path="leaderboard" element={<Leaderboard />} />
-//           </Route>
-//         </Routes>
-//       </BrowserRouter>
-//     </AuthProvider>
-//   );
-// }
-
-// export default App;
-
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import Login from "./pages/Login";
-// import Register from "./pages/Register";
-// import Dashboard from "./pages/Dashboard";
-// import { AuthProvider } from "./context/AuthContext";
-// import ProtectedRoute from "./components/ProtectedRoute";
-
-// function App() {
-//   return (
-//     <AuthProvider>
-//       <Router>
-//         <Routes>
-//           <Route path="/" element={<Login />} />
-//           <Route path="/register" element={<Register />} />
-
-//           {/* 🔐 Protected Dashboard */}
-//           <Route
-//             path="/app/dashboard"
-//             element={
-//               <ProtectedRoute>
-//                 <Dashboard />
-//               </ProtectedRoute>
-//             }
-//           />
-//         </Routes>
-//       </Router>
-//     </AuthProvider>
-//   );
-// }
-
-// export default App;

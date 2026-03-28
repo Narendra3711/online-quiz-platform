@@ -34,6 +34,14 @@ exports.createTopic = async (req, res) => {
     });
   }
 };
+exports.getTopicById = async (req, res) => {
+  try {
+    const topic = await Topic.findById(req.params.id);
+    res.json(topic);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching topic" });
+  }
+};
 
 // GET ALL TOPICS
 exports.getAllTopics = async (req, res) => {

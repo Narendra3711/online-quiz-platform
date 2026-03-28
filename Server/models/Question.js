@@ -26,9 +26,19 @@ const questionSchema = new mongoose.Schema(
     },
 
     correctAnswer: {
-      type: Number, // index of options array
+      type: Number, 
       required: true,
     },
+    difficulty: {
+  type: String,
+  enum: ["easy", "medium", "hard"],
+  default: "medium"
+},
+questionType: {
+  type: String,
+  enum: ["mcq", "fill"],
+  default: "mcq"
+}
   },
   { timestamps: true }
 );

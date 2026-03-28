@@ -95,19 +95,26 @@ import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
 import { AuthContext } from "../context/AuthContext";
+import "../styles/quiz.css";
 
 const Quiz = () => {
   const { topicId } = useParams();
-  const { token } = useContext(AuthContext);
+  // const { token } = useContext(AuthContext);
+  const token = localStorage.getItem("token");
 
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 1️⃣ Start quiz
+  // 🔥 NEW STATES
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState("");
+  
+
   useEffect(() => {
     const startQuiz = async () => {
+      console.log("TOKEN SENT:", token);
       try {
         const res = await api.get(`/quiz/start?topicId=${topicId}`, {
           headers: {
@@ -126,16 +133,31 @@ const Quiz = () => {
     startQuiz();
   }, [topicId, token]);
 
-  // 2️⃣ Select answer
-  const handleOptionChange = (questionId, optionIndex) => {
+  const currentQuestion = questions[currentIndex];
+
+  // 🔥 HANDLE NEXT
+  const handleNext = () => {
+    const qId = currentQuestion._id;
+
+    const optionIndex = currentQuestion.options.indexOf(selectedAnswer);
+
     setAnswers({
       ...answers,
-      [questionId]: optionIndex,
+      [qId]: optionIndex,
     });
+
+    setSelectedAnswer("");
+
+    if (currentIndex === questions.length - 1) {
+      submitQuiz();
+    } else {
+      setCurrentIndex(currentIndex + 1);
+    }
   };
 
-  // 3️⃣ Submit quiz
+  // 🔥 SUBMIT QUIZ
   const submitQuiz = async () => {
+    console.log("TOKEN:", token);
     const payload = {
       topicId,
       answers: Object.keys(answers).map((qid) => ({
@@ -157,54 +179,77 @@ const Quiz = () => {
     }
   };
 
-  // 🔄 Loading
   if (loading) return <h3>Loading quiz...</h3>;
 
-  // 🏁 Result view
-  if (result) {
-    return (
-      <div>
-        <h2>Quiz Result</h2>
-        <p><strong>Score:</strong> {result.score}</p>
-        <p><strong>Accuracy:</strong> {result.accuracy}%</p>
-        <p><strong>Level:</strong> {result.level}</p>
-        <h3>{result.boostMessage}</h3>
-      </div>
-    );
-  }
-
-  // ❓ No questions
   if (questions.length === 0) {
     return <p>No questions available</p>;
   }
 
-  // 📝 Quiz UI
+  // 🔥 RESULT UI
+  if (result) {
+    return (
+      <div className="quiz-container">
+        <div className="quiz-card">
+          <h2>🎉 Quiz Result</h2>
+          <p><strong>Score:</strong> {result.score}</p>
+          <p><strong>Accuracy:</strong> {result.accuracy}%</p>
+          <p><strong>Level:</strong> {result.level}</p>
+          <h3>{result.boostMessage}</h3>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2>Quiz</h2>
+    <div className="quiz-container">
+      <div className="quiz-card">
+        <h2>🧠 Quiz</h2>
 
-      {questions.map((q, index) => (
-        <div key={q._id} style={{ marginBottom: "20px" }}>
-          <p>
-            {index + 1}. {q.questionText}
-          </p>
+        {/* Progress */}
+        <p>
+          Question {currentIndex + 1} / {questions.length}
+        </p>
 
-          {q.options.map((opt, i) => (
-            <label key={i} style={{ display: "block" }}>
-              <input
-                type="radio"
-                name={q._id}
-                value={i}
-                checked={answers[q._id] === i}
-                onChange={() => handleOptionChange(q._id, i)}
-              />
+        <div className="progress-bar">
+          <div
+            className="progress"
+            style={{
+              width: `${((currentIndex + 1) / questions.length) * 100}%`,
+            }}
+          ></div>
+        </div>
+
+        {/* Question */}
+        <h3 className="question">
+          {currentQuestion.questionText}
+        </h3>
+
+        {/* Options */}
+        <div className="options">
+          {currentQuestion.options.map((opt, i) => (
+            <button
+              key={i}
+              className={`option ${
+                selectedAnswer === opt ? "selected" : ""
+              }`}
+              onClick={() => setSelectedAnswer(opt)}
+            >
               {opt}
-            </label>
+            </button>
           ))}
         </div>
-      ))}
 
-      <button onClick={submitQuiz}>Submit Quiz</button>
+        {/* Next Button */}
+        <button
+          className="next-btn"
+          onClick={handleNext}
+          disabled={!selectedAnswer}
+        >
+          {currentIndex === questions.length - 1
+            ? "Submit"
+            : "Next"}
+        </button>
+      </div>
     </div>
   );
 };
