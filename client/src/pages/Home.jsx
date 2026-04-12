@@ -259,7 +259,7 @@ const Home = () => {
   
       {/* NAVBAR */}
       <nav className="navbar">
-        <div className="logo">⚡ QUICK QUIZ</div>
+        <div className="logo">⚡ KNOWLEDGE COMPASS</div>
 
         <div className="nav-links">
           <span className="active">Home</span>

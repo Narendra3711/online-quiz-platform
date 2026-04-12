@@ -99,7 +99,7 @@ import "../styles/quiz.css";
 
 const Quiz = () => {
   const { topicId } = useParams();
-  // const { token } = useContext(AuthContext);
+  
   const token = localStorage.getItem("token");
 
   const [questions, setQuestions] = useState([]);
@@ -107,7 +107,7 @@ const Quiz = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 NEW STATES
+  
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   
@@ -117,7 +117,7 @@ const Quiz = () => {
       console.log("TOKEN SENT:", token);
       try {
         const res = await api.get(`/quiz/start?topicId=${topicId}`, {
-          headers: {
+          headers: { 
             Authorization: `Bearer ${token}`,
           },
         });
@@ -135,7 +135,7 @@ const Quiz = () => {
 
   const currentQuestion = questions[currentIndex];
 
-  // 🔥 HANDLE NEXT
+  
   const handleNext = () => {
     const qId = currentQuestion._id;
 
@@ -155,7 +155,7 @@ const Quiz = () => {
     }
   };
 
-  // 🔥 SUBMIT QUIZ
+  
   const submitQuiz = async () => {
     console.log("TOKEN:", token);
     const payload = {
@@ -185,7 +185,7 @@ const Quiz = () => {
     return <p>No questions available</p>;
   }
 
-  // 🔥 RESULT UI
+ 
   if (result) {
     return (
       <div className="quiz-container">
@@ -203,7 +203,7 @@ const Quiz = () => {
   return (
     <div className="quiz-container">
       <div className="quiz-card">
-        <h2>🧠 Quiz</h2>
+        <h2>🧠{topicId} Quiz</h2>
 
         {/* Progress */}
         <p>
@@ -219,12 +219,12 @@ const Quiz = () => {
           ></div>
         </div>
 
-        {/* Question */}
+       
         <h3 className="question">
           {currentQuestion.questionText}
         </h3>
 
-        {/* Options */}
+    
         <div className="options">
           {currentQuestion.options.map((opt, i) => (
             <button
@@ -239,7 +239,7 @@ const Quiz = () => {
           ))}
         </div>
 
-        {/* Next Button */}
+        
         <button
           className="next-btn"
           onClick={handleNext}
@@ -255,3 +255,4 @@ const Quiz = () => {
 };
 
 export default Quiz;
+

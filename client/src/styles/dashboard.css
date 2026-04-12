@@ -101,13 +101,15 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   z-index: 0;
+  pointer-events: none;
+
 }
 
 /* keep content above overlay */
 .sidebar,
 .dashboard-main {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 .dashboard-main {
   flex: 1;
@@ -196,8 +198,10 @@
 }
 .topic-card {
   position: relative;
-  overflow: hidden;
+  z-index: 1;
+  /* overflow: hidden; */
 }
+
 
 .topic-card::before {
   content: "";
@@ -213,8 +217,10 @@
 
   opacity: 0;
   transition: 0.5s;
-}
 
+  pointer-events: none; /* ✅ MUST */
+  z-index: 0;           /* ✅ ADD THIS */
+}
 .topic-card:hover::before {
   opacity: 1;
 }

@@ -230,15 +230,6 @@ if (progress.attemptedQuestions.includes(ans.questionId)) {
 
     await progress.save();
 
-    // res.status(200).json({
-    //   success: true,
-    //   correctAnswers: correctCount,
-    //   totalQuestions: answers.length,
-    //   accuracy,
-    //   level: progress.level,
-    //   score: progress.score,
-    //   boostMessage,
-    // });
 
     res.json({
   success: true,

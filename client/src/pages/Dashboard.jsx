@@ -56,6 +56,18 @@
 //             Start Quiz
 //           </button>
 //         </div>
+
+
+
+
+
+
+
+
+
+
+
+
 //       ))}
 //     </div>
 //   );
@@ -95,10 +107,13 @@ const Dashboard = () => {
     }
   };
 
-  const startQuiz = (topicId) => {
-    navigate(`/app/instructions/${topicId}`);
-  };
-
+  // const startQuiz = (topicId) => {
+  //   navigate(`/app/instructions/${topicId}`);
+  // };
+const startQuiz = (topicId) => {
+  console.log("BUTTON CLICKED", topicId);
+  navigate(`/app/instructions/${topicId}`);
+};
   if (loading) {
     return <h3 style={{ color: "white", padding: "40px" }}>Loading topics...</h3>;
   }
@@ -151,6 +166,7 @@ const Dashboard = () => {
         </div>
 
         {/* TOPICS */}
+        <h1 onClick={() => console.log("CLICK TEST")}>TEST CLICK</h1>
         <h2 className="topic-title">Choose a Topic</h2>
 
         <div className="topics-grid">
@@ -164,6 +180,8 @@ const Dashboard = () => {
               <button onClick={() => startQuiz(topic._id)}>
                 Start Quiz
               </button>
+              
+              
             </div>
           ))}
         </div>
