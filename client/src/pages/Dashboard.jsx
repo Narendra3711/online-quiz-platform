@@ -91,6 +91,10 @@ const Dashboard = () => {
 
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
+  const handleLogout = () => {
+  localStorage.removeItem("token"); // remove token
+  navigate("/login"); // redirect to login
+};
 
   useEffect(() => {
     fetchTopics();
@@ -135,7 +139,9 @@ const startQuiz = (topicId) => {
   <li><FaCog /> Settings</li>
 </ul>
 
-        <button className="logout">Logout</button>
+        <button className="logout" onClick={handleLogout}>
+  Logout
+</button>
       </div>
 
       {/* MAIN */}

@@ -166,8 +166,174 @@ exports.startQuiz = async (req, res) => {
 
 
 
+// exports.submitQuiz = async (req, res) => {
+//   const accuracy = (score / totalQuestions) * 100;
+//   try {
+//     const userId = req.user._id;
+//     const { topicId, answers } = req.body;
+
+//     if (!topicId || !answers || answers.length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid submission",
+//       });
+//     }
+
+//     const progress = await UserProgress.findOne({
+//       user: userId,
+//       topic: topicId,
+//     });
+
+//     if (!progress) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Quiz not started",
+//       });
+//     }
+
+//     let correctCount = 0;
+
+//     for (let ans of answers) {
+      
+// if (progress.attemptedQuestions.includes(ans.questionId)) {
+//   continue;
+// }
+
+//       const question = await Question.findById(ans.questionId);
+//       if (!question) continue;
+
+      
+//       if (!progress.attemptedQuestions.includes(question._id)) {
+//         progress.attemptedQuestions.push(question._id);
+//         progress.totalAttempted += 1;
+//       }
+
+      
+//       if (question.correctAnswer === ans.selectedOption) {
+//         correctCount += 1;
+//         progress.totalCorrect += 1;
+//         progress.score += 1;
+//       }
+//     }
+
+    
+//     const accuracy = Math.round(
+//       (progress.totalCorrect / progress.totalAttempted) * 100
+//     );
+
+    
+//     let boostMessage = "";
+//     if (correctCount >= 18) boostMessage = "🌟 Excellent! Outstanding performance";
+//     else if (correctCount >= 15) boostMessage = "👍 Great job! Keep going";
+//     else if (correctCount >= 10) boostMessage = "🙂 Good effort, you can improve";
+//     else boostMessage = "💪 Don't give up, practice more";
+
+//     await progress.save();
+
+
+//     res.json({
+//   success: true,
+//   correctAnswers,
+//   totalQuestions: answers.length,
+//   accuracy,
+//   level: progress.level,
+//   score: progress.score,
+//   badge: progress.badge,
+//   message:
+//     accuracy >= 90
+//       ? "🔥 Excellent work! You're mastering this topic."
+//       : accuracy >= 75
+//       ? "👍 Good job! Keep practicing to improve."
+//       : "💪 Don't give up. Practice makes perfect!",
+// });
+
+
+
+
+
+//   } catch (error) {
+//     console.error("SUBMIT QUIZ ERROR:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error",
+//     });
+//   }
+// };
+
+// exports.getAdaptiveQuestion = async (req, res) => {
+//   try {
+//     const { topicId, lastAnswerCorrect } = req.body;
+
+//     let difficulty = "medium";
+
+//     if (lastAnswerCorrect === true) {
+//       difficulty = "hard";
+//     } else if (lastAnswerCorrect === false) {
+//       difficulty = "easy";
+//     }
+
+//     // RANDOM question type (MCQ / FILL)
+//     const types = ["mcq", "fill"];
+//     const randomType = types[Math.floor(Math.random() * types.length)];
+
+//     const question = await Question.findOne({
+//       topic: topicId,
+//       difficulty,
+//       questionType: randomType
+//     });
+
+//     if (!question) {
+//       return res.status(404).json({ message: "No question found" });
+//     }
+
+//     res.json(question);
+
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+
+// exports.getUserAnalysis = async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+
+//     const results = await Result.find({ userId });
+
+//     if (results.length === 0) {
+//       return res.json({ message: "No data" });
+//     }
+
+    
+//     let best = results[0];
+//     let weak = results[0];
+
+//     results.forEach(r => {
+//       if (r.accuracy > best.accuracy) best = r;
+//       if (r.accuracy < weak.accuracy) weak = r;
+//     });
+
+//     const avg =
+//       results.reduce((sum, r) => sum + r.accuracy, 0) / results.length;
+
+   
+//     let level = "Medium";
+//     if (avg < 50) level = "Easy";
+//     else if (avg > 80) level = "Hard";
+
+//     res.json({
+//       averageAccuracy: avg,
+//       bestTopic: best.topic,
+//       weakTopic: weak.topic,
+//       recommendedLevel: level
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };  
+
 exports.submitQuiz = async (req, res) => {
-  const accuracy = (score / totalQuestions) * 100;
   try {
     const userId = req.user._id;
     const { topicId, answers } = req.body;
@@ -194,34 +360,37 @@ exports.submitQuiz = async (req, res) => {
     let correctCount = 0;
 
     for (let ans of answers) {
-      // Skip already attempted questions
-if (progress.attemptedQuestions.includes(ans.questionId)) {
-  continue;
-}
-
       const question = await Question.findById(ans.questionId);
       if (!question) continue;
 
-      // update attempted questions
       if (!progress.attemptedQuestions.includes(question._id)) {
         progress.attemptedQuestions.push(question._id);
         progress.totalAttempted += 1;
       }
 
-      // check correctness
-      if (question.correctAnswer === ans.selectedOption) {
-        correctCount += 1;
-        progress.totalCorrect += 1;
-        progress.score += 1;
+      // ✅ MCQ + Fill logic
+      if (question.questionType === "mcq") {
+        if (question.correctAnswer === ans.selectedAnswer) {
+          correctCount += 1;
+          progress.totalCorrect += 1;
+          progress.score += 1;
+        }
+      } else {
+        if (
+          question.correctAnswer.toLowerCase().trim() ===
+          ans.selectedAnswer.toLowerCase().trim()
+        ) {
+          correctCount += 1;
+          progress.totalCorrect += 1;
+          progress.score += 1;
+        }
       }
     }
 
-    // calculate accuracy
-    const accuracy = Math.round(
-      (progress.totalCorrect / progress.totalAttempted) * 100
-    );
+    // ✅ Calculate AFTER loop
+    const totalQuestions = answers.length;
+    const accuracy = Math.round((correctCount / totalQuestions) * 100);
 
-    // BOOST MESSAGE (quiz-level)
     let boostMessage = "";
     if (correctCount >= 18) boostMessage = "🌟 Excellent! Outstanding performance";
     else if (correctCount >= 15) boostMessage = "👍 Great job! Keep going";
@@ -230,26 +399,15 @@ if (progress.attemptedQuestions.includes(ans.questionId)) {
 
     await progress.save();
 
-
     res.json({
-  success: true,
-  correctAnswers,
-  totalQuestions: answers.length,
-  accuracy,
-  level: progress.level,
-  score: progress.score,
-  badge: progress.badge,
-  message:
-    accuracy >= 90
-      ? "🔥 Excellent work! You're mastering this topic."
-      : accuracy >= 75
-      ? "👍 Good job! Keep practicing to improve."
-      : "💪 Don't give up. Practice makes perfect!",
-});
-
-
-
-
+      success: true,
+      correctAnswers: correctCount,
+      totalQuestions,
+      accuracy,
+      level: progress.level,
+      score: correctCount, // ✅ FIXED
+      boostMessage,
+    });
 
   } catch (error) {
     console.error("SUBMIT QUIZ ERROR:", error);
@@ -259,77 +417,3 @@ if (progress.attemptedQuestions.includes(ans.questionId)) {
     });
   }
 };
-
-exports.getAdaptiveQuestion = async (req, res) => {
-  try {
-    const { topicId, lastAnswerCorrect } = req.body;
-
-    let difficulty = "medium";
-
-    if (lastAnswerCorrect === true) {
-      difficulty = "hard";
-    } else if (lastAnswerCorrect === false) {
-      difficulty = "easy";
-    }
-
-    // RANDOM question type (MCQ / FILL)
-    const types = ["mcq", "fill"];
-    const randomType = types[Math.floor(Math.random() * types.length)];
-
-    const question = await Question.findOne({
-      topic: topicId,
-      difficulty,
-      questionType: randomType
-    });
-
-    if (!question) {
-      return res.status(404).json({ message: "No question found" });
-    }
-
-    res.json(question);
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-
-exports.getUserAnalysis = async (req, res) => {
-  try {
-    const userId = req.user._id;
-
-    const results = await Result.find({ userId });
-
-    if (results.length === 0) {
-      return res.json({ message: "No data" });
-    }
-
-    // Find best and weak topic
-    let best = results[0];
-    let weak = results[0];
-
-    results.forEach(r => {
-      if (r.accuracy > best.accuracy) best = r;
-      if (r.accuracy < weak.accuracy) weak = r;
-    });
-
-    // Average accuracy
-    const avg =
-      results.reduce((sum, r) => sum + r.accuracy, 0) / results.length;
-
-    // Recommendation
-    let level = "Medium";
-    if (avg < 50) level = "Easy";
-    else if (avg > 80) level = "Hard";
-
-    res.json({
-      averageAccuracy: avg,
-      bestTopic: best.topic,
-      weakTopic: weak.topic,
-      recommendedLevel: level
-    });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};  

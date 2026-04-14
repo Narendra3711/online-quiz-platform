@@ -25,10 +25,37 @@ const questionSchema = new mongoose.Schema(
       validate: [arrayLimit, "Minimum 2 options required"],
     },
 
-    correctAnswer: {
-      type: Number, 
-      required: true,
-    },
+    // correctAnswer: {
+    //   type: Number, 
+    //   required: true,
+    // },
+
+    
+questionType: {
+  type: String,
+  enum: ["mcq", "fill"],
+  default: "mcq",
+},
+
+options: {
+  type: [String],
+  required: function () {
+    return this.questionType === "mcq";
+  },
+},
+
+correctAnswer: {
+  type: mongoose.Schema.Types.Mixed, // 🔥 IMPORTANT
+  required: true,
+},
+
+
+
+
+
+
+
+
     difficulty: {
   type: String,
   enum: ["easy", "medium", "hard"],

@@ -134,51 +134,133 @@ const Quiz = () => {
   }, [topicId, token]);
 
   const currentQuestion = questions[currentIndex];
+  console.log(currentQuestion);
 
   
-  const handleNext = () => {
-    const qId = currentQuestion._id;
+  // const handleNext = () => {
+  //   const qId = currentQuestion._id;
 
-    const optionIndex = currentQuestion.options.indexOf(selectedAnswer);
+  //   const optionIndex = currentQuestion.options.indexOf(selectedAnswer);
 
-    setAnswers({
-      ...answers,
-      [qId]: optionIndex,
+  //   setAnswers({
+  //     ...answers,
+  //     [qId]: optionIndex,
+  //   });
+
+  //   setSelectedAnswer("");
+
+  //   if (currentIndex === questions.length - 1) {
+  //     submitQuiz();
+  //   } else {
+  //     setCurrentIndex(currentIndex + 1);
+  //   }
+  // };
+
+//   const handleNext = () => {
+//   if (!selectedAnswer) {
+//     alert("Please select an answer");
+//     return;
+//   }
+
+//   const qId = currentQuestion._id;
+//   const optionIndex = currentQuestion.options.indexOf(selectedAnswer);
+
+//   const updatedAnswers = {
+//     ...answers,
+//     [qId]: optionIndex,
+//   };
+
+//   setAnswers(updatedAnswers);
+//   setSelectedAnswer("");
+
+//   if (currentIndex === questions.length - 1) {
+//     submitQuiz(updatedAnswers); // ✅ IMPORTANT FIX
+//   } else {
+//     setCurrentIndex(currentIndex + 1);
+//   }
+// };
+  
+
+const handleNext = () => {
+  if (!selectedAnswer) {
+    alert("Please select an answer");
+    return;
+  }
+
+  const qId = currentQuestion._id;
+  // const optionIndex = currentQuestion.options.indexOf(selectedAnswer);
+
+  let answerValue;
+
+if (currentQuestion.questionType === "mcq") {
+  answerValue = currentQuestion.options.indexOf(selectedAnswer);
+} else {
+  answerValue = selectedAnswer.toLowerCase().trim();
+}
+
+  const updatedAnswers = {
+    ...answers,
+    [qId]: answerValue,
+  };
+
+  setAnswers(updatedAnswers);
+  setSelectedAnswer("");
+
+  if (currentIndex === questions.length - 1) {
+    submitQuiz(updatedAnswers);
+  } else {
+    setCurrentIndex(currentIndex + 1);
+  }
+};
+  // const submitQuiz = async () => {
+  //   console.log("TOKEN:", token);
+  //   const payload = {
+  //     topicId,
+  //     answers: Object.keys(answers).map((qid) => ({
+  //       questionId: qid,
+  //       selectedOption: answers[qid],
+  //     })),
+  //   };
+
+  //   try {
+  //     const res = await api.post("/quiz/submit", payload, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     setResult(res.data);
+  //   } catch (err) {
+  //     alert("Failed to submit quiz");
+  //   }
+  // };
+
+
+  const submitQuiz = async (finalAnswers) => {
+  const payload = {
+    topicId,
+    answers: Object.keys(finalAnswers).map((qid) => ({
+      questionId: qid,
+      selectedAnswer: finalAnswers[qid], // ✅ FIXED
+    })),
+  };
+
+  console.log("FINAL PAYLOAD:", payload);
+  
+
+  try {
+    const res = await api.post("/quiz/submit", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    setSelectedAnswer("");
-
-    if (currentIndex === questions.length - 1) {
-      submitQuiz();
-    } else {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  
-  const submitQuiz = async () => {
-    console.log("TOKEN:", token);
-    const payload = {
-      topicId,
-      answers: Object.keys(answers).map((qid) => ({
-        questionId: qid,
-        selectedOption: answers[qid],
-      })),
-    };
-
-    try {
-      const res = await api.post("/quiz/submit", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setResult(res.data);
-    } catch (err) {
-      alert("Failed to submit quiz");
-    }
-  };
-
+    setResult(res.data);
+  } catch (err) {
+    console.log(err.response?.data);
+    alert("Failed to submit quiz");
+  }
+};
   if (loading) return <h3>Loading quiz...</h3>;
 
   if (questions.length === 0) {
@@ -220,12 +302,12 @@ const Quiz = () => {
         </div>
 
        
-        <h3 className="question">
+        {/* <h3 className="question">
           {currentQuestion.questionText}
-        </h3>
+        </h3> */}
 
     
-        <div className="options">
+        {/* <div className="options">
           {currentQuestion.options.map((opt, i) => (
             <button
               key={i}
@@ -237,20 +319,104 @@ const Quiz = () => {
               {opt}
             </button>
           ))}
-        </div>
+        </div> */}
+
+        {/* <div className="options">
+
+  
+  {currentQuestion.questionType === "mcq" &&
+    currentQuestion.options.map((opt, i) => (
+      <button
+        key={i}
+        className={`option ${
+          selectedAnswer === opt ? "selected" : ""
+        }`}
+        onClick={() => setSelectedAnswer(opt)}
+      >
+        {opt}
+      </button>
+    ))} */}
+
+    {/* {currentQuestion.questionType === "mcq" ? (
+
+  <div className="options">
+    {currentQuestion.options.map((opt, i) => (
+      <button
+        key={i}
+        className={`option ${
+          selectedAnswer === opt ? "selected" : ""
+        }`}
+        onClick={() => setSelectedAnswer(opt)}
+      >
+        {opt}
+      </button>
+    ))}
+  </div>
+
+) : (
+
+  <input
+    type="text"
+    placeholder="Type your answer..."
+    value={selectedAnswer}
+    onChange={(e) => setSelectedAnswer(e.target.value)}
+    className="fill-input"
+  />
+
+)} */}
+
+<h3 className="question">
+  {currentQuestion.questionText}
+</h3>
+
+{/* ✅ SINGLE CLEAN LOGIC */}
+{currentQuestion.questionText.includes("___") ? (
+
+  <input
+    type="text"
+    placeholder="Type your answer..."
+    value={selectedAnswer}
+    onChange={(e) => setSelectedAnswer(e.target.value)}
+    className="fill-input"
+  />
+
+) : (
+
+  <div className="options">
+    {currentQuestion.options?.map((opt, i) => (
+      <button
+        key={i}
+        className={`option ${selectedAnswer === opt ? "selected" : ""}`}
+        onClick={() => setSelectedAnswer(opt)}
+      >
+        {opt}
+      </button>
+    ))}
+  </div>
+
+)}
+
+  
+
+
 
         
-        <button
+        {/* <button
           className="next-btn"
           onClick={handleNext}
           disabled={!selectedAnswer}
-        >
+        > */}
+        <button
+  className="next-btn"
+  onClick={handleNext}
+>
           {currentIndex === questions.length - 1
             ? "Submit"
             : "Next"}
         </button>
       </div>
-    </div>
+      </div>
+    
   );
 };
 

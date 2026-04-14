@@ -1,7 +1,44 @@
 const Question = require("../../models/Question");
 
 // ADD QUESTION (Admin)
+// exports.addQuestion = async (req, res) => {
+//   console.log("BODY:", req.body);
+//   try {
+//     const { topic, level, questionText, options, correctAnswer } = req.body;
+
+//     if (!topic || !level || !questionText || !options || correctAnswer === undefined) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields are required",
+//       });
+//     }
+
+//     const question = await Question.create({
+//       topic,
+//       level,
+//       questionText,
+//       options,
+//       correctAnswer,
+//     });
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Question added successfully",
+//       question,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error",
+//     });
+//   }
+// };
+
+const mongoose = require("mongoose"); // 🔥 ADD THIS
+
 exports.addQuestion = async (req, res) => {
+  console.log("BODY:", req.body);
+
   try {
     const { topic, level, questionText, options, correctAnswer } = req.body;
 
@@ -13,7 +50,7 @@ exports.addQuestion = async (req, res) => {
     }
 
     const question = await Question.create({
-      topic,
+      topic: new mongoose.Types.ObjectId(topic), // 🔥 FIX HERE
       level,
       questionText,
       options,
@@ -26,9 +63,10 @@ exports.addQuestion = async (req, res) => {
       question,
     });
   } catch (error) {
+    console.log("ERROR:", error.message); // 🔥 ADD THIS
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: error.message,
     });
   }
 };
